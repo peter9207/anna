@@ -39,6 +39,8 @@ func LoadFromFile(filename string) {
 
 	log.Println("Connected to db")
 
+	var count = 0
+
 	loaders.FromCSV(filename, func(values []string) {
 
 		id, err := strconv.Atoi(values[1])
@@ -59,7 +61,10 @@ func LoadFromFile(filename string) {
 			log.Print("Error saving record into db", err)
 		}
 
-		log.Println("saved record")
+		count = count + 1
+		if count%1000 == 0 {
+			log.Printf("processed %v records", count)
+		}
 
 	})
 

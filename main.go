@@ -3,8 +3,7 @@ package main
 // import "strconv"
 // import "log"
 import "github.com/spf13/cobra"
-
-// import "fmt"
+import "fmt"
 import "github.com/peter9207/anna/articles"
 
 var rootCmd = &cobra.Command{
