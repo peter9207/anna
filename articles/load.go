@@ -7,6 +7,7 @@ import (
 	_ "github.com/lib/pq"
 	"log"
 	"strconv"
+	"strings"
 )
 
 type Article struct {
@@ -17,15 +18,19 @@ type Article struct {
 	date        string
 	url         string
 	content     string
+	tag         string
 }
 
 var insertQuery = `
-INSERT INTO articles (id, title, publication, author, timestamp, url, content)
-VALUES($1,$2,$3,$4,$5,$6,$7)
+INSERT INTO articles (id, title, publication, author, timestamp, url, content, tag)
+VALUES($1,$2,$3,$4,$5,$6,$7, $8)
 `
 
-// ,id,title,publication,author,date,year,month,url,content
-func LoadFromFile(filename string) {
+func searchIgnoreCase(s, v string) bool {
+	return strings.Contains(strings.ToLower(s), strings.ToLower(v))
+}
+
+func LoadFromFile(filename string, tag string) {
 	db, err := sql.Open("postgres", "postgres://postgres:password@localhost:5432/anna?sslmode=disable")
 	if err != nil {
 		panic(err)
@@ -39,6 +44,7 @@ func LoadFromFile(filename string) {
 
 	log.Println("Connected to db")
 
+	var total = 0
 	var count = 0
 
 	loaders.FromCSV(filename, func(values []string) {
@@ -49,21 +55,31 @@ func LoadFromFile(filename string) {
 			return
 		}
 
-		_, err = db.Exec(insertQuery, id,
-			values[2],
-			values[3],
-			values[4],
-			values[5],
-			values[8],
-			values[9],
-		)
-		if err != nil {
-			log.Print("Error saving record into db", err)
+		title := values[2]
+		content := values[9]
+
+		inTitle := searchIgnoreCase(title, tag)
+		inContents := searchIgnoreCase(content, tag)
+
+		if inTitle || inContents {
+			_, err = db.Exec(insertQuery, id,
+				values[2],
+				values[3],
+				values[4],
+				values[5],
+				values[8],
+				values[9],
+				tag,
+			)
+			if err != nil {
+				log.Print("Error saving record into db", err)
+			}
+			count = count + 1
 		}
 
-		count = count + 1
+		total = total + 1
 		if count%1000 == 0 {
-			log.Printf("processed %v records", count)
+			log.Printf("processed %v records %v inserted", total, count)
 		}
 
 	})
