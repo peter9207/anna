@@ -1,8 +1,9 @@
 package main
 
-// import "strconv"
-// import "log"
+import "strconv"
+import "log"
 import "github.com/spf13/cobra"
+import "github.com/peter9207/anna/loaders"
 
 // import "fmt"
 import "github.com/peter9207/anna/articles"
@@ -21,6 +22,23 @@ var articlesCmd = &cobra.Command{
 var valuesCmd = &cobra.Command{
 	Use: "calculate <filename>",
 	Run: func(cmd *cobra.Command, args []string) {
+
+		if len(args) > 2 {
+			cmd.Help()
+			return
+		}
+
+		filename := args[1]
+
+		var values []float64
+
+		loaders.FromCSV(filename, func(input []string) {
+			f, err := strconv.ParseFloat(input[4], 64)
+			if err != nil {
+				log.Println(err)
+			}
+			values = append(values, f)
+		})
 
 	},
 }
