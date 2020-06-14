@@ -6,16 +6,15 @@ import (
 	"math"
 )
 
-func findPOI(values []float64) (indexes []int64) {
+type POI struct {
+	index int64
+	value float64
+}
+
+func findPOI(values []float64) (indexes []POI) {
 
 	windowSize := 9
-
 	threshold := float64(1000)
-
-	// var start, end int64
-
-	// start = 0
-	// end = int64(windowSize)
 
 	for i := 0; i < len(values)-windowSize; i++ {
 
@@ -26,9 +25,12 @@ func findPOI(values []float64) (indexes []int64) {
 
 		if math.Abs(diff) > threshold {
 			fmt.Printf("first Half: %v second half: %v, mid: %v\n", v1, v2, values[i])
-			indexes = append(indexes, int64(i+4))
+			poi := POI{
+				index: int64(i + 4),
+				value: math.Abs(diff),
+			}
+			indexes = append(indexes, poi)
 		}
-
 	}
 	return
 }
