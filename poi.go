@@ -24,7 +24,7 @@ func findPOI(values []float64) (indexes []POI) {
 		diff := v1 - v2
 
 		if math.Abs(diff) > threshold {
-			fmt.Printf("first Half: %v second half: %v, mid: %v\n", v1, v2, values[i])
+			fmt.Printf("index: %v,  first Half: %v second half: %v, mid: %v\n", i, v1, v2, values[i])
 			poi := POI{
 				index: int64(i + 4),
 				value: math.Abs(diff),

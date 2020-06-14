@@ -7,7 +7,7 @@ import "github.com/spf13/cobra"
 import "database/sql"
 import _ "github.com/lib/pq"
 
-var insertQuery = ` INSERT INTO results (article_id, cost, tag) VALUES (?, ?, ?) `
+var insertQuery = ` INSERT INTO results (article_id, cost, tag) VALUES ($1, $2, $3) `
 
 var valuesCmd = &cobra.Command{
 	Use: "calculate <tag> <filename>",
@@ -50,11 +50,12 @@ var valuesCmd = &cobra.Command{
 	},
 }
 
-var searchQuery = ` SELECT id from articles where tag = ? AND timestamp <= ? order by timestamp desc limit 1 `
+var searchQuery = `SELECT id from articles where tag = $1 AND timestamp <= $2 order by timestamp desc limit 1;`
 
 func save(date string, cost float64, tag string, db *sql.DB) error {
 
 	var articleId string
+
 	row := db.QueryRow(searchQuery, tag, date)
 	err := row.Scan(&articleId)
 	if err != nil {
@@ -66,6 +67,7 @@ func save(date string, cost float64, tag string, db *sql.DB) error {
 		return err
 	}
 
+	log.Printf("date: %v, articleId: %v", date, articleId)
 	_, err = db.Exec(insertQuery, articleId, cost, tag)
 	if err != nil {
 		log.Printf("Saving results returned err %v ", err)
