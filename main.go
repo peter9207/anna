@@ -38,6 +38,7 @@ func main() {
 
 	articlesCmd.AddCommand(loadArticlesCmd)
 	rootCmd.AddCommand(articlesCmd)
+	rootCmd.AddCommand(viewCmd)
 	rootCmd.AddCommand(valuesCmd)
 	rootCmd.Execute()
 
