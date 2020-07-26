@@ -11,8 +11,6 @@ import "github.com/peter9207/anna/articles"
 
 var rootCmd = &cobra.Command{
 	Use: "anna",
-	// Short: "my attempt at doing some data analytics",
-	// Long:  "Too lazy to write this",
 }
 
 var articlesCmd = &cobra.Command{
@@ -34,10 +32,17 @@ var loadArticlesCmd = &cobra.Command{
 	},
 }
 
+var determineCmd = &cobra.Command{
+	Use:   "determine <function>",
+	Short: "determine functions",
+}
+
 func main() {
 
 	articlesCmd.AddCommand(loadArticlesCmd)
+	determineCmd.AddCommand(expCoeff)
 	rootCmd.AddCommand(articlesCmd)
+	rootCmd.AddCommand(determineCmd)
 	rootCmd.AddCommand(viewCmd)
 	rootCmd.AddCommand(valuesCmd)
 	rootCmd.Execute()
