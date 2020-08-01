@@ -1,11 +1,13 @@
 package main
 
-import "github.com/peter9207/anna/loaders"
 import "github.com/spf13/cobra"
+
+import "github.com/peter9207/anna/loaders"
 import "github.com/peter9207/anna/measurer"
+import "github.com/peter9207/anna/sequences"
+
 import "strconv"
 import "log"
-import "github.com/peter9207/anna/sequences"
 import "fmt"
 import "math"
 
