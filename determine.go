@@ -1,6 +1,7 @@
 package main
 
 import "github.com/spf13/cobra"
+import "github.com/peter9207/anna/runners"
 
 import "github.com/peter9207/anna/loaders"
 import "github.com/peter9207/anna/measurer"
@@ -62,3 +63,33 @@ func calculateEstimator(k float64, offset int64, sequence []float64) float64 {
 
 	return measurer.MeanSquared(exp, f)
 }
+
+var subsequence = &cobra.Command{
+	Use: "subsequence <filename>",
+	Run: func(cmd *cobra.Command, args []string) {
+
+		if len(args) < 1 {
+			cmd.Help()
+			return
+		}
+
+		filename := args[0]
+
+		data := []float64{}
+
+		loaders.FromCSV(filename, func(input []string) {
+			f, err := strconv.ParseFloat(input[0], 64)
+			if err != nil {
+				log.Println(err)
+			}
+			data = append(data, f)
+		})
+
+		r := runners.Subsequence{Data: data}
+
+		results := r.Run()
+
+		fmt.Println("completed Run, length: ", len(results))
+		fmt.Println("last result ", results[len(results)-1])
+
+	}}

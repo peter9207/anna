@@ -1,10 +1,9 @@
 package runners
 
-import "github.com/peter9207/anna/loaders"
 import "github.com/peter9207/anna/measurer"
 import "github.com/peter9207/anna/sequences"
-import "fmt"
 import "sort"
+import "fmt"
 
 type Subsequence struct {
 	Data []float64
@@ -16,8 +15,8 @@ type Result struct {
 	Score float64
 }
 
-func lessResult(i, j Result) bool {
-	return i.Score < j.Score
+func (r Result) String() string {
+	return fmt.Sprintf("Start: %v, End: %v, Score: %v", r.Start, r.End, r.Score)
 }
 
 func (s Subsequence) Run() (results []Result) {
@@ -33,7 +32,6 @@ func (s Subsequence) Run() (results []Result) {
 		end := start + sequenceLength
 		for _, v := range trials {
 			val := calculateEstimator(v, int64(s.Data[i]), s.Data)
-			fmt.Printf("resulting parameters: %v error %v \n", v, val)
 			results = append(results, Result{
 				Start: start,
 				End:   end,
@@ -41,7 +39,10 @@ func (s Subsequence) Run() (results []Result) {
 			})
 		}
 	}
-	sort.Slice(results, lessResult)
+	sort.Slice(results,
+		func(i, j int) bool {
+			return results[i].Score < results[j].Score
+		})
 	return
 
 }

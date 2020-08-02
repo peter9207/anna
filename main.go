@@ -41,6 +41,7 @@ func main() {
 
 	articlesCmd.AddCommand(loadArticlesCmd)
 	determineCmd.AddCommand(expCoeff)
+	determineCmd.AddCommand(subsequence)
 	rootCmd.AddCommand(articlesCmd)
 	rootCmd.AddCommand(determineCmd)
 	rootCmd.AddCommand(viewCmd)
